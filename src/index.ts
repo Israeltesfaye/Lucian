@@ -1,10 +1,23 @@
 import * as dotenv from "dotenv"
+import express from "express"
+import { Request, Response } from "express"
 import { Bot, InlineKeyboard } from "grammy"
 import { connect, Document } from "mongoose"
 import { response } from "./utils/response"
 import { User, ChatSession, ChatMessage } from "./models"
 
 dotenv.config()
+
+const app = express()
+const port = process.env.PORT || 8000
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("Bot is alive")
+})
+
+app.listen(port, () => {
+  console.log("server running")
+})
 
 const connectDB = async () => {
   try {
