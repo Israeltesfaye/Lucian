@@ -28,8 +28,7 @@ export class ChatMessagesDAO {
     const { data, error } = await supabase
       .from("ChatMessages")
       .select("*")
-      .eq("ChatSessionId", sessionId)
-      .order("id", { ascending: true });
+      .eq("ChatSessionId", sessionId);
     if (error) throw error;
     return data;
   }
@@ -118,7 +117,13 @@ export class UsersDAO {
       .select("*")
       .eq("tgid", tgid)
       .single();
-    if (error) throw error;
+    if (error) {
+      if (error.code == "PGRST116") {
+        return null;
+      } else {
+        throw error;
+      }
+    }
     return data;
   }
 

@@ -70,8 +70,7 @@ bot.on("message:text", async (ctx) => {
     role: "model",
     text: msg,
   });
-
-  ctx.reply(msg);
+  ctx.reply(msg, { parse_mode: "Markdown" });
 });
 
 bot.start();
