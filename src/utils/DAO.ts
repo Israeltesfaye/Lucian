@@ -28,6 +28,7 @@ export class ChatMessagesDAO {
     const { data, error } = await supabase
       .from("ChatMessages")
       .select("*")
+      .order("timestamp", { ascending: true })
       .eq("ChatSessionId", sessionId);
     if (error) throw error;
     return data;

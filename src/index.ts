@@ -70,7 +70,18 @@ bot.on("message:text", async (ctx) => {
     role: "model",
     text: msg,
   });
-  ctx.reply(msg, { parse_mode: "Markdown" });
+  ctx.reply(msg);
+  if (chatHistory.length <= 3) {
+    chatHistory.push({
+      role: "user",
+      parts: [{ text: "give a short title for our this discussion" }],
+    });
+    let title = await response(
+      "give a short title for our this discussion",
+      chatHistory
+    );
+    await ChatSessionsDAO.update(currentChat.currentChat, { title: title });
+  }
 });
 
 bot.start();
