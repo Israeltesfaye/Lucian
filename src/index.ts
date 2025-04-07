@@ -51,11 +51,32 @@ bot.command("start", async (ctx) => {
 });
 
 bot.command("newchat", async (ctx) => {
+  const user = await UsersDAO.getByTgid(String(ctx?.message?.from?.id));
   const newChat = await ChatSessionsDAO.create({});
   await UsersDAO.update(ctx?.message?.from?.id as number, {
     currentChat: newChat.id,
+    chatsessions: [...user.chatsessions, newChat.id],
   });
   ctx.reply("new chat created");
+});
+
+bot.command("chatlist", async (ctx) => {
+  const user = await UsersDAO.getByTgid(String(ctx?.message?.from?.id));
+  let chatlist: any[] = [];
+  for (const id of user.chatsessions) {
+    const chat = await ChatSessionsDAO.getById(id);
+    chatlist.push([{ text: chat.title, callback_data: chat.id }]);
+  }
+  console.log(chatlist);
+  ctx.reply("chats", { reply_markup: { inline_keyboard: chatlist } });
+});
+
+bot.on("callback_query:data", async (ctx) => {
+  const callbackData = ctx.callbackQuery.data;
+  await UsersDAO.update(ctx?.callbackQuery?.from?.id, {
+    currentChat: callbackData,
+  });
+  ctx.reply("chat changed");
 });
 
 bot.on("message:text", async (ctx) => {
