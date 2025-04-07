@@ -50,6 +50,14 @@ bot.command("start", async (ctx) => {
   }
 });
 
+bot.command("newchat", async (ctx) => {
+  const newChat = await ChatSessionsDAO.create({});
+  await UsersDAO.update(ctx?.message?.from?.id as number, {
+    currentChat: newChat.id,
+  });
+  ctx.reply("new chat created");
+});
+
 bot.on("message:text", async (ctx) => {
   const currentChat = await UsersDAO.getByTgid(
     String(ctx?.message?.from?.id as number)
