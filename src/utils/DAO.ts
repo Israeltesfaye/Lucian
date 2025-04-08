@@ -156,3 +156,29 @@ export class UsersDAO {
     return { message: "User deleted successfully" };
   }
 }
+
+export class VideosDAO {
+  static async create(video: Database["public"]["Tables"]["Videos"]["Insert"]) {
+    const { data, error } = await supabase
+      .from("Videos")
+      .insert(video)
+      .select();
+    if (error) throw error;
+    return data;
+  }
+  static async getByTitle(title: string) {
+    const { data, error } = await supabase
+      .from("Videos")
+      .select("*")
+      .eq("title", title)
+      .single();
+    if (error) {
+      if (error.code == "PGRST116") {
+        return null;
+      } else {
+        throw error;
+      }
+    }
+    return data;
+  }
+}

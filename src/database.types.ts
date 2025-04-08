@@ -53,6 +53,24 @@ export type Database = {
         };
         Relationships: [];
       };
+      Videos: {
+        Row: {
+          id: string;
+          title: string;
+          url: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          url: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          url?: string;
+        };
+        Relationships: [];
+      };
       Users: {
         Row: {
           chatsessions: string[] | null;
