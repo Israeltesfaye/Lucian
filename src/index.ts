@@ -1,9 +1,11 @@
 import * as dotenv from "dotenv";
 import express from "express";
 import { Request, Response } from "express";
-import { Bot, InlineKeyboard } from "grammy";
+import { Bot } from "grammy";
+import * as cron from "node-cron";
 import { response } from "./utils/response";
 import { ChatMessagesDAO, ChatSessionsDAO, UsersDAO } from "./utils/DAO";
+import getVideos from "./utils/videos";
 
 dotenv.config();
 
@@ -17,6 +19,16 @@ app.get("/", (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log("server running");
 });
+
+cron.schedule(
+  "0 2 * * *",
+  async () => {
+    await getVideos();
+  },
+  {
+    timezone: "UTC",
+  }
+);
 
 const bot = new Bot(process.env.BOT_TOKEN as string);
 
@@ -67,7 +79,6 @@ bot.command("chatlist", async (ctx) => {
     const chat = await ChatSessionsDAO.getById(id);
     chatlist.push([{ text: chat.title, callback_data: chat.id }]);
   }
-  console.log(chatlist);
   ctx.reply("chats", { reply_markup: { inline_keyboard: chatlist } });
 });
 
