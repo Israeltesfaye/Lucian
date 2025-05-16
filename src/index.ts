@@ -21,12 +21,12 @@ app.listen(port, () => {
 });
 
 cron.schedule(
-  "0 2 * * *",
+  process.env.SCHEDULE as string,
   async () => {
     await getVideos();
   },
   {
-    timezone: "UTC",
+    timezone: "Africa/Addis_Ababa",
   }
 );
 
